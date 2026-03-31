@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TrustLayer AI</title>
+    <style>
+      :root {
+        --bg: #f6efe4;
+        --panel: #fffdf8;
+        --ink: #1f2a32;
+        --ink-soft: #5e6a72;
+        --brand: #085f63;
+        --brand-strong: #054a4d;
+        --accent: #f4a261;
+        --ok: #2a9d8f;
+        --warn: #d97904;
+        --danger: #b3261e;
+        --border: #ddcfbe;
+        --shadow: 0 12px 32px rgba(31, 42, 50, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 8% 0%, #ffdfb9 0%, transparent 38%),
+          radial-gradient(circle at 92% 10%, #c8ece7 0%, transparent 35%),
+          var(--bg);
+        padding: 28px 20px;
+      }
+
+      .container {
+        width: min(1100px, 100%);
+        margin: 0 auto;
+        display: grid;
+        gap: 16px;
+      }
+
+      .hero {
+        background: linear-gradient(
+          130deg,
+          #0a5a5e 0%,
+          #117e83 58%,
+          #37a4a8 100%
+        );
+        color: #fff;
+        border-radius: 20px;
+        padding: 22px;
+        box-shadow: var(--shadow);
+        transform: translateY(8px);
+        opacity: 0;
+        animation: riseIn 450ms ease forwards;
+      }
+
+      .hero h1 {
+        margin: 0;
+        font-size: clamp(1.5rem, 1.2rem + 1.6vw, 2.35rem);
+        letter-spacing: 0.02em;
+      }
+
+      .hero p {
+        margin: 10px 0 0;
+        color: #d9f6f3;
+        max-width: 70ch;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 18px;
+        box-shadow: var(--shadow);
+        transform: translateY(8px);
+        opacity: 0;
+        animation: riseIn 450ms ease forwards;
+      }
+
+      .card:nth-child(1) {
+        animation-delay: 90ms;
+      }
+
+      .card:nth-child(2) {
+        animation-delay: 170ms;
+      }
+
+      .card h2 {
+        margin: 0 0 12px;
+        font-size: 1.2rem;
+        color: var(--brand-strong);
+      }
+
+      .field {
+        display: grid;
+        gap: 10px;
+      }
+
+      .scope-row {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      input[type="file"],
+      input[type="text"],
+      select {
+        border: 1px solid #cdb8a3;
+        border-radius: 10px;
+        padding: 12px;
+        font-size: 0.95rem;
+        background: #fff;
+        color: var(--ink);
+      }
+
+      input[type="text"]:focus,
+      input[type="file"]:focus,
+      select:focus {
+        outline: 2px solid #8dd5cd;
+        outline-offset: 1px;
+      }
+
+      .btn {
+        border: none;
+        border-radius: 11px;
+        padding: 12px 16px;
+        color: #fff;
+        background: linear-gradient(160deg, var(--brand) 0%, #14969c 100%);
+        font-weight: 600;
+        cursor: pointer;
+        transition:
+          transform 120ms ease,
+          filter 120ms ease;
+      }
+
+      .btn:hover {
+        filter: brightness(1.06);
+        transform: translateY(-1px);
+      }
+
+      .result {
+        background: #fffefa;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 18px;
+        box-shadow: var(--shadow);
+        min-height: 180px;
+      }
+
+      .result-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 10px;
+      }
+
+      .result-head h3 {
+        margin: 0;
+        font-size: 1.05rem;
+        color: var(--brand-strong);
+      }
+
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        border-radius: 999px;
+        padding: 6px 12px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        color: #fff;
+        background: var(--ink-soft);
+      }
+
+      .chip.safe {
+        background: var(--ok);
+      }
+
+      .chip.suspicious {
+        background: var(--warn);
+      }
+
+      .chip.dangerous {
+        background: var(--danger);
+      }
+
+      .summary {
+        display: grid;
+        gap: 6px;
+        margin-bottom: 10px;
+        color: var(--ink-soft);
+        font-size: 0.95rem;
+      }
+
+      .reason-list {
+        margin: 8px 0 0;
+        padding-left: 18px;
+        color: var(--ink-soft);
+      }
+
+      .recommend-list {
+        margin: 8px 0 0;
+        padding-left: 18px;
+        color: #3d4b52;
+      }
+
+      .meta-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+        margin: 12px 0;
+      }
+
+      .meta-box {
+        background: #f5f0e6;
+        border: 1px solid #decebc;
+        border-radius: 10px;
+        padding: 10px;
+      }
+
+      .meta-title {
+        margin: 0;
+        font-size: 0.78rem;
+        color: var(--ink-soft);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .meta-value {
+        margin: 4px 0 0;
+        font-size: 1rem;
+        color: var(--brand-strong);
+        font-weight: 700;
+      }
+
+      .raw {
+        margin: 12px 0 0;
+        background: #f4eee3;
+        border-radius: 10px;
+        padding: 10px;
+        overflow-x: auto;
+        white-space: pre-wrap;
+        font-size: 0.84rem;
+      }
+
+      .muted {
+        color: var(--ink-soft);
+        margin: 0;
+      }
+
+      @keyframes riseIn {
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      @media (max-width: 860px) {
+        body {
+          padding: 20px 14px;
+        }
+
+        .grid {
+          grid-template-columns: 1fr;
+        }
+
+        .meta-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="container">
+      <section class="hero">
+        <h1>TrustLayer AI Scanner</h1>
+        <p>
+          Scan files and URLs for early risk signals. Fast checks, readable
+          scoring, and clear reasons.
+        </p>
+      </section>
+
+      <section class="grid">
+        <article class="card">
+          <h2>Scan File</h2>
+          <div class="field">
+            <div class="scope-row">
+              <label for="scopeInput">Analysis Scope</label>
+              <select id="scopeInput">
+                <option value="quick">Quick</option>
+                <option value="balanced" selected>Balanced</option>
+                <option value="strict">Strict</option>
+              </select>
+            </div>
+            <label for="fileInput">Choose file</label>
+            <input type="file" id="fileInput" />
+            <button class="btn" onclick="uploadFile()">Analyze File</button>
+          </div>
+        </article>
+
+        <article class="card">
+          <h2>Scan URL</h2>
+          <div class="field">
+            <label for="urlInput">Enter URL</label>
+            <input
+              type="text"
+              id="urlInput"
+              placeholder="https://example.com/login"
+            />
+            <button class="btn" onclick="scanURL()">Analyze URL</button>
+          </div>
+        </article>
+      </section>
+
+      <section class="result" id="output" aria-live="polite">
+        <div class="result-head">
+          <h3>Latest Result</h3>
+          <span class="chip">Waiting</span>
+        </div>
+        <p class="muted">Run a scan to see analysis details and risk score.</p>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
