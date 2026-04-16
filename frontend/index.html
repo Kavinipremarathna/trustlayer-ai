@@ -6,18 +6,19 @@
     <title>TrustLayer AI</title>
     <style>
       :root {
-        --bg: #f6efe4;
-        --panel: #fffdf8;
-        --ink: #1f2a32;
-        --ink-soft: #5e6a72;
-        --brand: #085f63;
-        --brand-strong: #054a4d;
-        --accent: #f4a261;
-        --ok: #2a9d8f;
-        --warn: #d97904;
-        --danger: #b3261e;
-        --border: #ddcfbe;
-        --shadow: 0 12px 32px rgba(31, 42, 50, 0.12);
+        --bg: #f3eadb;
+        --panel: rgba(255, 252, 245, 0.94);
+        --panel-strong: #fff8ee;
+        --ink: #182127;
+        --ink-soft: #62707a;
+        --brand: #0d5c63;
+        --brand-strong: #083f45;
+        --accent: #e07a2f;
+        --ok: #1f9d8a;
+        --warn: #cb6b18;
+        --danger: #ad2e24;
+        --border: #dbc7ae;
+        --shadow: 0 18px 42px rgba(24, 33, 39, 0.14);
       }
 
       * {
@@ -27,11 +28,16 @@
       body {
         margin: 0;
         min-height: 100vh;
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        font-family: "Trebuchet MS", "Segoe UI", sans-serif;
         color: var(--ink);
         background:
-          radial-gradient(circle at 8% 0%, #ffdfb9 0%, transparent 38%),
-          radial-gradient(circle at 92% 10%, #c8ece7 0%, transparent 35%),
+          radial-gradient(circle at 8% 0%, #ffd8ab 0%, transparent 36%),
+          radial-gradient(circle at 92% 10%, #c7ebe3 0%, transparent 34%),
+          radial-gradient(
+            circle at 50% 100%,
+            rgba(224, 122, 47, 0.12) 0%,
+            transparent 40%
+          ),
           var(--bg);
         padding: 28px 20px;
       }
@@ -46,17 +52,18 @@
       .hero {
         background: linear-gradient(
           130deg,
-          #0a5a5e 0%,
-          #117e83 58%,
-          #37a4a8 100%
+          #0a4f55 0%,
+          #126a70 48%,
+          #1d8f8f 100%
         );
         color: #fff;
         border-radius: 20px;
-        padding: 22px;
+        padding: 24px;
         box-shadow: var(--shadow);
         transform: translateY(8px);
         opacity: 0;
         animation: riseIn 450ms ease forwards;
+        border: 1px solid rgba(255, 255, 255, 0.14);
       }
 
       .hero h1 {
@@ -67,7 +74,7 @@
 
       .hero p {
         margin: 10px 0 0;
-        color: #d9f6f3;
+        color: #d1f0ec;
         max-width: 70ch;
       }
 
@@ -79,13 +86,15 @@
 
       .card {
         background: var(--panel);
-        border: 1px solid var(--border);
+        border: 1px solid rgba(219, 199, 174, 0.9);
         border-radius: 16px;
         padding: 18px;
         box-shadow: var(--shadow);
         transform: translateY(8px);
         opacity: 0;
         animation: riseIn 450ms ease forwards;
+        -webkit-backdrop-filter: blur(8px);
+        backdrop-filter: blur(8px);
       }
 
       .card:nth-child(1) {
@@ -150,8 +159,8 @@
       }
 
       .result {
-        background: #fffefa;
-        border: 1px solid var(--border);
+        background: var(--panel-strong);
+        border: 1px solid rgba(219, 199, 174, 0.9);
         border-radius: 16px;
         padding: 18px;
         box-shadow: var(--shadow);
@@ -196,12 +205,122 @@
         background: var(--danger);
       }
 
+      .score-banner {
+        display: flex;
+        align-items: stretch;
+        justify-content: space-between;
+        gap: 16px;
+        border-radius: 16px;
+        padding: 16px 18px;
+        margin: 10px 0 14px;
+        color: #fff;
+        background: linear-gradient(
+          135deg,
+          rgba(13, 92, 99, 0.95),
+          rgba(20, 150, 156, 0.95)
+        );
+      }
+
+      .score-banner.suspicious {
+        background: linear-gradient(
+          135deg,
+          rgba(203, 107, 24, 0.95),
+          rgba(224, 122, 47, 0.95)
+        );
+      }
+
+      .score-banner.dangerous {
+        background: linear-gradient(
+          135deg,
+          rgba(173, 46, 36, 0.95),
+          rgba(201, 74, 56, 0.95)
+        );
+      }
+
+      .score-label {
+        margin: 0;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-size: 0.72rem;
+        opacity: 0.85;
+      }
+
+      .score-value {
+        margin: 4px 0 0;
+        font-size: 2.2rem;
+        line-height: 1;
+        font-weight: 800;
+      }
+
+      .score-copy {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-end;
+        gap: 6px;
+        font-size: 0.9rem;
+        opacity: 0.92;
+      }
+
       .summary {
         display: grid;
         gap: 6px;
         margin-bottom: 10px;
         color: var(--ink-soft);
         font-size: 0.95rem;
+      }
+
+      .signal-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        margin: 14px 0;
+      }
+
+      .signal-card {
+        background: rgba(255, 255, 255, 0.78);
+        border: 1px solid #dcc9b0;
+        border-radius: 12px;
+        padding: 12px;
+      }
+
+      .signal-card-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 8px;
+      }
+
+      .signal-points {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 48px;
+        border-radius: 999px;
+        padding: 4px 10px;
+        background: rgba(13, 92, 99, 0.12);
+        color: var(--brand-strong);
+        font-weight: 800;
+      }
+
+      .signal-rule {
+        font-size: 0.82rem;
+        color: var(--ink-soft);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .signal-card p {
+        margin: 0;
+        color: var(--ink);
+        font-weight: 600;
+      }
+
+      .signal-card small {
+        display: block;
+        margin-top: 8px;
+        color: var(--ink-soft);
       }
 
       .reason-list {
@@ -278,6 +397,18 @@
 
         .meta-grid {
           grid-template-columns: 1fr;
+        }
+
+        .signal-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .score-banner {
+          flex-direction: column;
+        }
+
+        .score-copy {
+          align-items: flex-start;
         }
       }
     </style>
