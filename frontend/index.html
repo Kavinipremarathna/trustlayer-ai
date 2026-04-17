@@ -4,21 +4,27 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TrustLayer AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
     <style>
       :root {
-        --bg: #f3eadb;
-        --panel: rgba(255, 252, 245, 0.94);
-        --panel-strong: #fff8ee;
-        --ink: #182127;
-        --ink-soft: #62707a;
-        --brand: #0d5c63;
-        --brand-strong: #083f45;
-        --accent: #e07a2f;
-        --ok: #1f9d8a;
-        --warn: #cb6b18;
-        --danger: #ad2e24;
-        --border: #dbc7ae;
-        --shadow: 0 18px 42px rgba(24, 33, 39, 0.14);
+        --bg: #071216;
+        --ink: #dff3f6;
+        --ink-soft: #8fb1b8;
+        --panel: rgba(11, 27, 33, 0.8);
+        --panel-strong: rgba(14, 35, 43, 0.92);
+        --edge: rgba(111, 212, 212, 0.22);
+        --brand: #24b8bd;
+        --brand-strong: #0f8f95;
+        --accent: #ff9d3f;
+        --ok: #2ab69a;
+        --warn: #ff9c3b;
+        --danger: #ef5d4d;
+        --shadow: 0 24px 54px rgba(0, 0, 0, 0.4);
       }
 
       * {
@@ -28,73 +34,156 @@
       body {
         margin: 0;
         min-height: 100vh;
-        font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+        font-family: "Space Grotesk", "Segoe UI", sans-serif;
         color: var(--ink);
         background:
-          radial-gradient(circle at 8% 0%, #ffd8ab 0%, transparent 36%),
-          radial-gradient(circle at 92% 10%, #c7ebe3 0%, transparent 34%),
+          radial-gradient(
+            circle at 0% 0%,
+            rgba(36, 184, 189, 0.2),
+            transparent 38%
+          ),
+          radial-gradient(
+            circle at 100% 0%,
+            rgba(255, 157, 63, 0.14),
+            transparent 34%
+          ),
           radial-gradient(
             circle at 50% 100%,
-            rgba(224, 122, 47, 0.12) 0%,
-            transparent 40%
+            rgba(30, 95, 117, 0.4),
+            transparent 45%
           ),
           var(--bg);
-        padding: 28px 20px;
+        padding: 26px 18px;
       }
 
       .container {
-        width: min(1100px, 100%);
+        width: min(1180px, 100%);
         margin: 0 auto;
         display: grid;
-        gap: 16px;
+        gap: 18px;
       }
 
       .hero {
         background: linear-gradient(
-          130deg,
-          #0a4f55 0%,
-          #126a70 48%,
-          #1d8f8f 100%
+          126deg,
+          rgba(12, 39, 49, 0.95) 0%,
+          rgba(18, 61, 74, 0.95) 52%,
+          rgba(28, 96, 105, 0.93) 100%
         );
-        color: #fff;
-        border-radius: 20px;
-        padding: 24px;
+        color: var(--ink);
+        border-radius: 22px;
+        padding: 28px;
         box-shadow: var(--shadow);
         transform: translateY(8px);
         opacity: 0;
         animation: riseIn 450ms ease forwards;
-        border: 1px solid rgba(255, 255, 255, 0.14);
+        border: 1px solid var(--edge);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero::after {
+        content: "";
+        position: absolute;
+        width: 320px;
+        height: 320px;
+        border-radius: 999px;
+        top: -160px;
+        right: -120px;
+        background: radial-gradient(
+          circle,
+          rgba(45, 193, 198, 0.25),
+          transparent 68%
+        );
       }
 
       .hero h1 {
         margin: 0;
-        font-size: clamp(1.5rem, 1.2rem + 1.6vw, 2.35rem);
-        letter-spacing: 0.02em;
+        font-size: clamp(1.65rem, 1.2rem + 2vw, 2.6rem);
+        letter-spacing: 0.01em;
+        position: relative;
+        z-index: 1;
       }
 
       .hero p {
-        margin: 10px 0 0;
-        color: #d1f0ec;
-        max-width: 70ch;
+        margin: 12px 0 0;
+        color: #b5d7dd;
+        max-width: 68ch;
+        position: relative;
+        z-index: 1;
+      }
+
+      .hero-actions {
+        margin-top: 14px;
+        display: flex;
+        justify-content: flex-end;
+        position: relative;
+        z-index: 1;
+      }
+
+      .theme-toggle {
+        border: 1px solid rgba(147, 201, 210, 0.38);
+        background: rgba(7, 18, 22, 0.45);
+        color: #c6e8ed;
+        border-radius: 999px;
+        padding: 8px 14px;
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 0.78rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        cursor: pointer;
+      }
+
+      .theme-toggle:hover {
+        border-color: rgba(147, 201, 210, 0.58);
+      }
+
+      .hero-stats {
+        margin-top: 20px;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .hero-pill {
+        border: 1px solid rgba(143, 177, 184, 0.28);
+        border-radius: 12px;
+        padding: 10px 12px;
+        background: rgba(7, 18, 22, 0.35);
+      }
+
+      .hero-pill small {
+        display: block;
+        color: var(--ink-soft);
+        font-family: "IBM Plex Mono", monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-size: 0.68rem;
+      }
+
+      .hero-pill strong {
+        font-size: 0.95rem;
       }
 
       .grid {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 16px;
+        gap: 18px;
       }
 
       .card {
         background: var(--panel);
-        border: 1px solid rgba(219, 199, 174, 0.9);
-        border-radius: 16px;
-        padding: 18px;
+        border: 1px solid var(--edge);
+        border-radius: 18px;
+        padding: 20px;
         box-shadow: var(--shadow);
         transform: translateY(8px);
         opacity: 0;
         animation: riseIn 450ms ease forwards;
-        -webkit-backdrop-filter: blur(8px);
-        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
       }
 
       .card:nth-child(1) {
@@ -107,8 +196,8 @@
 
       .card h2 {
         margin: 0 0 12px;
-        font-size: 1.2rem;
-        color: var(--brand-strong);
+        font-size: 1.26rem;
+        color: #c4eff0;
       }
 
       .field {
@@ -125,29 +214,37 @@
       input[type="file"],
       input[type="text"],
       select {
-        border: 1px solid #cdb8a3;
-        border-radius: 10px;
+        border: 1px solid rgba(129, 170, 178, 0.35);
+        border-radius: 12px;
         padding: 12px;
         font-size: 0.95rem;
-        background: #fff;
-        color: var(--ink);
+        background: rgba(6, 16, 20, 0.74);
+        color: #d4edf2;
+        font-family: inherit;
       }
 
       input[type="text"]:focus,
       input[type="file"]:focus,
       select:focus {
-        outline: 2px solid #8dd5cd;
+        outline: 2px solid rgba(36, 184, 189, 0.9);
         outline-offset: 1px;
+      }
+
+      label {
+        color: #9ec5cb;
+        font-size: 0.9rem;
       }
 
       .btn {
         border: none;
-        border-radius: 11px;
+        border-radius: 12px;
         padding: 12px 16px;
-        color: #fff;
-        background: linear-gradient(160deg, var(--brand) 0%, #14969c 100%);
+        color: #051014;
+        background: linear-gradient(160deg, #47d1d5 0%, #16b4bb 100%);
         font-weight: 600;
         cursor: pointer;
+        font-family: inherit;
+        letter-spacing: 0.02em;
         transition:
           transform 120ms ease,
           filter 120ms ease;
@@ -158,11 +255,17 @@
         transform: translateY(-1px);
       }
 
+      .btn:disabled {
+        cursor: not-allowed;
+        filter: saturate(0.4);
+        transform: none;
+      }
+
       .result {
         background: var(--panel-strong);
-        border: 1px solid rgba(219, 199, 174, 0.9);
-        border-radius: 16px;
-        padding: 18px;
+        border: 1px solid var(--edge);
+        border-radius: 18px;
+        padding: 20px;
         box-shadow: var(--shadow);
         min-height: 180px;
       }
@@ -178,7 +281,7 @@
       .result-head h3 {
         margin: 0;
         font-size: 1.05rem;
-        color: var(--brand-strong);
+        color: #caeff1;
       }
 
       .chip {
@@ -190,7 +293,7 @@
         font-weight: 700;
         letter-spacing: 0.02em;
         color: #fff;
-        background: var(--ink-soft);
+        background: #557a80;
       }
 
       .chip.safe {
@@ -216,8 +319,8 @@
         color: #fff;
         background: linear-gradient(
           135deg,
-          rgba(13, 92, 99, 0.95),
-          rgba(20, 150, 156, 0.95)
+          rgba(15, 137, 149, 0.9),
+          rgba(35, 184, 189, 0.85)
         );
       }
 
@@ -260,6 +363,7 @@
         gap: 6px;
         font-size: 0.9rem;
         opacity: 0.92;
+        font-family: "IBM Plex Mono", monospace;
       }
 
       .summary {
@@ -278,8 +382,8 @@
       }
 
       .signal-card {
-        background: rgba(255, 255, 255, 0.78);
-        border: 1px solid #dcc9b0;
+        background: rgba(4, 16, 21, 0.8);
+        border: 1px solid rgba(116, 176, 184, 0.28);
         border-radius: 12px;
         padding: 12px;
       }
@@ -299,8 +403,8 @@
         min-width: 48px;
         border-radius: 999px;
         padding: 4px 10px;
-        background: rgba(13, 92, 99, 0.12);
-        color: var(--brand-strong);
+        background: rgba(36, 184, 189, 0.18);
+        color: #8feef0;
         font-weight: 800;
       }
 
@@ -309,11 +413,12 @@
         color: var(--ink-soft);
         text-transform: uppercase;
         letter-spacing: 0.05em;
+        font-family: "IBM Plex Mono", monospace;
       }
 
       .signal-card p {
         margin: 0;
-        color: var(--ink);
+        color: #d0edf1;
         font-weight: 600;
       }
 
@@ -332,7 +437,7 @@
       .recommend-list {
         margin: 8px 0 0;
         padding-left: 18px;
-        color: #3d4b52;
+        color: #9bc2c9;
       }
 
       .meta-grid {
@@ -343,8 +448,8 @@
       }
 
       .meta-box {
-        background: #f5f0e6;
-        border: 1px solid #decebc;
+        background: rgba(5, 18, 23, 0.78);
+        border: 1px solid rgba(122, 178, 186, 0.28);
         border-radius: 10px;
         padding: 10px;
       }
@@ -360,23 +465,125 @@
       .meta-value {
         margin: 4px 0 0;
         font-size: 1rem;
-        color: var(--brand-strong);
+        color: #b0f2f3;
         font-weight: 700;
       }
 
       .raw {
         margin: 12px 0 0;
-        background: #f4eee3;
+        background: rgba(2, 12, 15, 0.8);
         border-radius: 10px;
         padding: 10px;
         overflow-x: auto;
         white-space: pre-wrap;
         font-size: 0.84rem;
+        color: #9ac3cb;
+        border: 1px solid rgba(98, 146, 153, 0.24);
+        font-family: "IBM Plex Mono", monospace;
       }
 
       .muted {
         color: var(--ink-soft);
         margin: 0;
+      }
+
+      .loading-shell {
+        display: grid;
+        gap: 10px;
+      }
+
+      .loading-bar {
+        width: 100%;
+        height: 8px;
+        border-radius: 999px;
+        overflow: hidden;
+        border: 1px solid rgba(116, 176, 184, 0.35);
+        background: rgba(4, 16, 21, 0.8);
+      }
+
+      .loading-fill {
+        width: 34%;
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, #47d1d5, #1fc6cc);
+        animation: pulseBar 1s ease-in-out infinite;
+      }
+
+      .history {
+        background: var(--panel);
+        border: 1px solid var(--edge);
+        border-radius: 18px;
+        padding: 20px;
+        box-shadow: var(--shadow);
+      }
+
+      .history h3 {
+        margin: 0 0 10px;
+        color: #c9eef1;
+      }
+
+      .history-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        gap: 8px;
+      }
+
+      .history-item {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+        gap: 10px;
+        border: 1px solid rgba(112, 170, 177, 0.28);
+        border-radius: 12px;
+        padding: 10px 12px;
+        background: rgba(4, 16, 21, 0.72);
+      }
+
+      .history-kind {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #88bdc3;
+      }
+
+      .history-meta {
+        min-width: 0;
+      }
+
+      .history-target {
+        margin: 0;
+        color: #c5edf0;
+        font-size: 0.93rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .history-sub {
+        margin: 2px 0 0;
+        color: #88aeb5;
+        font-size: 0.78rem;
+      }
+
+      .history-score {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 0.88rem;
+        color: #b4f2f2;
+      }
+
+      .history-empty {
+        color: var(--ink-soft);
+        margin: 0;
+      }
+
+      .footer-note {
+        text-align: center;
+        color: #7ca2a8;
+        font-size: 0.84rem;
+        font-family: "IBM Plex Mono", monospace;
       }
 
       @keyframes riseIn {
@@ -386,9 +593,61 @@
         }
       }
 
+      @keyframes pulseBar {
+        0% {
+          transform: translateX(0);
+        }
+        50% {
+          transform: translateX(140%);
+        }
+        100% {
+          transform: translateX(0);
+        }
+      }
+
+      body[data-theme="light"] {
+        --bg: #eef4f7;
+        --ink: #132127;
+        --ink-soft: #58757d;
+        --panel: rgba(255, 255, 255, 0.9);
+        --panel-strong: rgba(255, 255, 255, 0.96);
+        --edge: rgba(28, 95, 105, 0.2);
+        --brand: #168f95;
+        --brand-strong: #0d6d72;
+        --shadow: 0 20px 45px rgba(17, 43, 49, 0.16);
+      }
+
+      body[data-theme="light"] .hero {
+        color: #ebfeff;
+      }
+
+      body[data-theme="light"] input[type="file"],
+      body[data-theme="light"] input[type="text"],
+      body[data-theme="light"] select {
+        background: rgba(241, 252, 255, 0.94);
+        color: #163037;
+      }
+
+      body[data-theme="light"] .theme-toggle {
+        background: rgba(10, 60, 66, 0.75);
+        color: #e8fdff;
+      }
+
       @media (max-width: 860px) {
         body {
-          padding: 20px 14px;
+          padding: 18px 12px;
+        }
+
+        .hero {
+          padding: 22px;
+        }
+
+        .hero-actions {
+          justify-content: flex-start;
+        }
+
+        .hero-stats {
+          grid-template-columns: 1fr;
         }
 
         .grid {
@@ -418,9 +677,28 @@
       <section class="hero">
         <h1>TrustLayer AI Scanner</h1>
         <p>
-          Scan files and URLs for early risk signals. Fast checks, readable
-          scoring, and clear reasons.
+          Security-first analysis for files and URLs with explainable risk
+          scoring, confidence signals, and immediate mitigation guidance.
         </p>
+        <div class="hero-actions">
+          <button class="theme-toggle" id="themeToggle" type="button">
+            Switch Theme
+          </button>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-pill">
+            <small>Detection Scope</small>
+            <strong>Quick / Balanced / Strict</strong>
+          </div>
+          <div class="hero-pill">
+            <small>Outputs</small>
+            <strong>Score, reasons, and recommendations</strong>
+          </div>
+          <div class="hero-pill">
+            <small>Use Case</small>
+            <strong>Threat triage before action</strong>
+          </div>
+        </div>
       </section>
 
       <section class="grid">
@@ -437,7 +715,9 @@
             </div>
             <label for="fileInput">Choose file</label>
             <input type="file" id="fileInput" />
-            <button class="btn" onclick="uploadFile()">Analyze File</button>
+            <button class="btn" id="fileScanBtn" onclick="uploadFile()">
+              Analyze File
+            </button>
           </div>
         </article>
 
@@ -450,7 +730,9 @@
               id="urlInput"
               placeholder="https://example.com/login"
             />
-            <button class="btn" onclick="scanURL()">Analyze URL</button>
+            <button class="btn" id="urlScanBtn" onclick="scanURL()">
+              Analyze URL
+            </button>
           </div>
         </article>
       </section>
@@ -462,6 +744,19 @@
         </div>
         <p class="muted">Run a scan to see analysis details and risk score.</p>
       </section>
+
+      <section class="history" aria-live="polite">
+        <h3>Recent Scans</h3>
+        <ul class="history-list" id="historyList">
+          <li>
+            <p class="history-empty">No completed scans yet.</p>
+          </li>
+        </ul>
+      </section>
+
+      <p class="footer-note">
+        TrustLayer AI · Defensive Risk Analysis Workspace
+      </p>
     </main>
 
     <script src="app.js"></script>

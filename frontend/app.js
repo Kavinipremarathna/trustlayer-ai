@@ -1,4 +1,104 @@
 const API_BASE = "http://127.0.0.1:8000";
+const MAX_HISTORY_ITEMS = 8;
+const historyState = [];
+
+function getTheme() {
+  return localStorage.getItem("trustlayer-theme") || "dark";
+}
+
+function applyTheme(theme) {
+  document.body.setAttribute("data-theme", theme);
+}
+
+function setupThemeToggle() {
+  applyTheme(getTheme());
+  let toggle = document.getElementById("themeToggle");
+  if (!toggle) {
+    return;
+  }
+
+  toggle.addEventListener("click", () => {
+    let nextTheme = getTheme() === "dark" ? "light" : "dark";
+    localStorage.setItem("trustlayer-theme", nextTheme);
+    applyTheme(nextTheme);
+  });
+}
+
+function setButtonsDisabled(isDisabled) {
+  let fileButton = document.getElementById("fileScanBtn");
+  let urlButton = document.getElementById("urlScanBtn");
+  if (fileButton) fileButton.disabled = isDisabled;
+  if (urlButton) urlButton.disabled = isDisabled;
+}
+
+function renderLoading(kind, target, scope) {
+  let output = document.getElementById("output");
+  let descriptor = kind === "file" ? "File" : "URL";
+  output.innerHTML = `
+    <div class="result-head">
+      <h3>Latest Result</h3>
+      <span class="chip">Scanning</span>
+    </div>
+    <div class="loading-shell">
+      <p class="muted">Running ${escapeHtml(scope)} ${descriptor.toLowerCase()} scan for ${escapeHtml(target)}.</p>
+      <div class="loading-bar"><div class="loading-fill"></div></div>
+      <p class="muted">Checking signals and calculating risk score...</p>
+    </div>
+  `;
+}
+
+function updateHistory(item) {
+  historyState.unshift(item);
+  historyState.splice(MAX_HISTORY_ITEMS);
+
+  let list = document.getElementById("historyList");
+  if (!list) {
+    return;
+  }
+
+  if (!historyState.length) {
+    list.innerHTML =
+      '<li><p class="history-empty">No completed scans yet.</p></li>';
+    return;
+  }
+
+  list.innerHTML = historyState
+    .map(
+      (entry) => `
+      <li class="history-item">
+        <span class="history-kind">${escapeHtml(entry.kind)}</span>
+        <div class="history-meta">
+          <p class="history-target">${escapeHtml(entry.target)}</p>
+          <p class="history-sub">${escapeHtml(entry.label)} · ${escapeHtml(entry.scope)} · ${escapeHtml(entry.time)}</p>
+        </div>
+        <span class="history-score">${escapeHtml(String(entry.score))}</span>
+      </li>`,
+    )
+    .join("");
+}
+
+function addHistoryFromResult(kind, data, elapsedMs) {
+  let risk = data && data.risk ? data.risk : {};
+  let analysis = data && data.analysis ? data.analysis : {};
+  let target = analysis.filename || analysis.domain || "Unknown target";
+  let label = risk.label || "Unknown";
+  let score = Number.isFinite(risk.score) ? risk.score : 0;
+  let scope = risk.scope || "balanced";
+  let time = new Date().toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  let suffix = elapsedMs > 0 ? ` (${Math.round(elapsedMs)}ms)` : "";
+
+  updateHistory({
+    kind,
+    target,
+    label,
+    score,
+    scope,
+    time: `${time}${suffix}`,
+  });
+}
 
 function escapeHtml(value) {
   return String(value)
@@ -139,6 +239,9 @@ async function uploadFile() {
 
   let formData = new FormData();
   formData.append("file", file);
+  let started = performance.now();
+  renderLoading("file", file.name, scope);
+  setButtonsDisabled(true);
 
   try {
     let res = await fetch(
@@ -157,8 +260,11 @@ async function uploadFile() {
     }
 
     renderResult(data);
+    addHistoryFromResult("File", data, performance.now() - started);
   } catch (err) {
     renderError(err.message || "File scan failed");
+  } finally {
+    setButtonsDisabled(false);
   }
 }
 
@@ -170,6 +276,10 @@ async function scanURL() {
     renderError("Please enter a URL before scanning.");
     return;
   }
+
+  let started = performance.now();
+  renderLoading("url", url, scope);
+  setButtonsDisabled(true);
 
   try {
     let res = await fetch(`${API_BASE}/scan-url/`, {
@@ -188,7 +298,12 @@ async function scanURL() {
     }
 
     renderResult(data);
+    addHistoryFromResult("URL", data, performance.now() - started);
   } catch (err) {
     renderError(err.message || "URL scan failed");
+  } finally {
+    setButtonsDisabled(false);
   }
 }
+
+setupThemeToggle();
