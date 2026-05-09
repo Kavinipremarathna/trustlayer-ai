@@ -9,10 +9,24 @@ client = TestClient(app)
 
 
 def test_health_check():
-    response = client.get("/health")
+    response = client.get("/api/health")
 
     assert response.status_code == 200
     assert response.json() == {"status": "ok", "service": "trustlayer-ai"}
+
+
+def test_frontend_root_served():
+    response = client.get("/")
+
+    assert response.status_code == 200
+    assert "TrustLayer AI Scanner" in response.text
+
+
+def test_frontend_app_js_served():
+    response = client.get("/app.js")
+
+    assert response.status_code == 200
+    assert "API_BASE" in response.text
 
 
 def test_scan_url_success():
@@ -39,7 +53,7 @@ def test_scan_url_success():
     with patch("app.services.url_service.analyze_url", return_value=fake_analysis), patch(
         "app.services.url_service.calculate_risk", return_value=fake_risk
     ):
-        response = client.post("/scan-url/", json={"url": "https://example.com", "scope": "balanced"})
+        response = client.post("/api/scan-url/", json={"url": "https://example.com", "scope": "balanced"})
 
     assert response.status_code == 200
     payload = response.json()
@@ -48,14 +62,14 @@ def test_scan_url_success():
 
 
 def test_scan_url_invalid_scheme():
-    response = client.post("/scan-url/", json={"url": "ftp://example.com", "scope": "balanced"})
+    response = client.post("/api/scan-url/", json={"url": "ftp://example.com", "scope": "balanced"})
 
     assert response.status_code == 400
     assert response.json()["detail"] == "URL must start with http:// or https://"
 
 
 def test_scan_url_missing_required_field():
-    response = client.post("/scan-url/", json={"scope": "balanced"})
+    response = client.post("/api/scan-url/", json={"scope": "balanced"})
 
     assert response.status_code == 422
 
@@ -90,7 +104,7 @@ def test_scan_file_success():
         "app.services.file_service.analyze_file", AsyncMock(return_value=fake_analysis)
     ), patch("app.services.file_service.calculate_risk", return_value=fake_risk):
         response = client.post(
-            "/scan-file/?scope=balanced",
+            "/api/scan-file/?scope=balanced",
             files={"file": ("invoice.pdf", b"%PDF-sample", "application/pdf")},
         )
 
